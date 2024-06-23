@@ -47,18 +47,18 @@ public class FilmController {
             log.error(validationException.getMessage(), validationException);
             throw validationException;
         }
-        if (films.containsKey(newFilm.getId())) {
-            Film oldFilm = films.get(newFilm.getId());
-            oldFilm.setName(newFilm.getName());
-            oldFilm.setDescription(newFilm.getDescription());
-            oldFilm.setReleaseDate(newFilm.getReleaseDate());
-            oldFilm.setDuration(newFilm.getDuration());
-            log.info("Updated film {}", oldFilm);
-            return oldFilm;
+        if (!films.containsKey(newFilm.getId())) {
+            NotFoundException notFoundException = new NotFoundException(String.format("Фильма с таким id = %s не найдено",
+                    newFilm.getId()));
+            log.error(notFoundException.getMessage(), notFoundException);
+            throw notFoundException;
         }
-        NotFoundException notFoundException = new NotFoundException(String.format("Фильма с таким id = %s не найдено",
-                newFilm.getId()));
-        log.error(notFoundException.getMessage(), notFoundException);
-        throw notFoundException;
+        Film oldFilm = films.get(newFilm.getId());
+        oldFilm.setName(newFilm.getName());
+        oldFilm.setDescription(newFilm.getDescription());
+        oldFilm.setReleaseDate(newFilm.getReleaseDate());
+        oldFilm.setDuration(newFilm.getDuration());
+        log.info("Updated film {}", oldFilm);
+        return oldFilm;
     }
 }
