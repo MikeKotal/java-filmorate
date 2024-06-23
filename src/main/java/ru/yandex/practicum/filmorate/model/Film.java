@@ -15,8 +15,7 @@ import java.time.LocalDate;
 @NotNull(message = "Необходимо передать информацию о фильме")
 public class Film {
     private Long id;
-    @NotNull(message = "Название фильма не должно быть пустым")
-    @NotBlank(message = "Название содержит только пробелы")
+    @NotBlank(message = "Название фильма не должно быть пустым")
     private String name;
     @Size(max = 200, message = "Максимальное количество символов = 200")
     private String description;

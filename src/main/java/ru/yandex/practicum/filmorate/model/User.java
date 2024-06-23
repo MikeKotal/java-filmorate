@@ -14,11 +14,10 @@ import java.time.LocalDate;
 @NotNull(message = "Необходимо передать информацию о пользователе")
 public class User {
     private Long id;
-    @NotNull(message = "Email не должен быть пустым")
+    @NotBlank(message = "Email не должен быть пустым")
     @Email(message = "Email имеет некорректный формат")
     private String email;
-    @NotNull(message = "Логин не должен быть пустым")
-    @NotBlank(message = "Логин состоит только из пробелов")
+    @NotBlank(message = "Логин не должен быть пустым")
     private String login;
     private String name;
     @Past

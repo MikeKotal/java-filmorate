@@ -22,6 +22,7 @@ import java.util.Map;
 public class FilmController {
 
     private final Map<Long, Film> films = new HashMap<>();
+    private long counter = 0L;
 
     @GetMapping
     public Collection<Film> getFilms() {
@@ -33,7 +34,7 @@ public class FilmController {
     @PostMapping
     public Film addFilm(@Valid @RequestBody Film newFilm) {
         log.info("Add film {}", newFilm);
-        newFilm.setId(getNewId());
+        newFilm.setId(++counter);
         films.put(newFilm.getId(), newFilm);
         return newFilm;
     }
@@ -59,14 +60,5 @@ public class FilmController {
                 newFilm.getId()));
         log.error(notFoundException.getMessage(), notFoundException);
         throw notFoundException;
-    }
-
-    private Long getNewId() {
-        long currentMaxId = films.keySet()
-                .stream()
-                .mapToLong(id -> id)
-                .max()
-                .orElse(0);
-        return ++currentMaxId;
     }
 }

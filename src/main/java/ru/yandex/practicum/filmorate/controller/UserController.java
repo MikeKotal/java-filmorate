@@ -22,6 +22,7 @@ import java.util.Map;
 public class UserController {
 
     private final Map<Long, User> users = new HashMap<>();
+    private long counter = 0L;
 
     @GetMapping
     public Collection<User> getUsers() {
@@ -33,7 +34,7 @@ public class UserController {
     @PostMapping
     public User createUser(@Valid @RequestBody User newUser) {
         log.info("Create user {}", newUser);
-        newUser.setId(getNewId());
+        newUser.setId(++counter);
         newUser.setName((newUser.getName() == null || newUser.getName().isBlank())
                 ? newUser.getLogin()
                 : newUser.getName());
@@ -50,29 +51,20 @@ public class UserController {
             log.error(validationException.getMessage(), validationException);
             throw validationException;
         }
-        if (users.containsKey(newUser.getId())) {
-            User oldUser = users.get(newUser.getId());
-            oldUser.setEmail(newUser.getEmail());
-            oldUser.setLogin(newUser.getLogin());
-            oldUser.setName((newUser.getName() == null || newUser.getName().isBlank())
-                    ? newUser.getLogin()
-                    : newUser.getName());
-            oldUser.setBirthday(newUser.getBirthday());
-            log.info("Updated user {}", oldUser);
-            return oldUser;
+        if (!users.containsKey(newUser.getId())) {
+            NotFoundException notFoundException
+                    = new NotFoundException(String.format("Пользователя с таким id = %s не найдено", newUser.getId()));
+            log.error(notFoundException.getMessage(), notFoundException);
+            throw notFoundException;
         }
-        NotFoundException notFoundException
-                = new NotFoundException(String.format("Пользователя с таким id = %s не найдено", newUser.getId()));
-        log.error(notFoundException.getMessage(), notFoundException);
-        throw notFoundException;
-    }
-
-    private Long getNewId() {
-        long currentMaxId = users.keySet()
-                .stream()
-                .mapToLong(id -> id)
-                .max()
-                .orElse(0);
-        return ++currentMaxId;
+        User oldUser = users.get(newUser.getId());
+        oldUser.setEmail(newUser.getEmail());
+        oldUser.setLogin(newUser.getLogin());
+        oldUser.setName((newUser.getName() == null || newUser.getName().isBlank())
+                ? newUser.getLogin()
+                : newUser.getName());
+        oldUser.setBirthday(newUser.getBirthday());
+        log.info("Updated user {}", oldUser);
+        return oldUser;
     }
 }
