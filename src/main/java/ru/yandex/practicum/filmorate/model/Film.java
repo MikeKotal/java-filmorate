@@ -9,6 +9,7 @@ import lombok.EqualsAndHashCode;
 import ru.yandex.practicum.filmorate.annotations.MinimumDate;
 
 import java.time.LocalDate;
+import java.util.Set;
 
 @Data
 @EqualsAndHashCode(of = {"id"})
@@ -23,4 +24,11 @@ public class Film {
     private LocalDate releaseDate;
     @Min(value = 0, message = "Продолжительность не может быть отрицательной")
     private Long duration;
+    private Set<Long> userIdLikes;
+    private Integer likes;
+
+    public void setUserIdLikes(Set<Long> userIdLikes) {
+        this.userIdLikes = userIdLikes;
+        this.likes = userIdLikes.size();
+    }
 }
