@@ -27,7 +27,7 @@ public class InMemoryUserStorage implements UserStorage {
     @Override
     public User findUserById(Long id) {
         if (!users.containsKey(id)) {
-            throw new NotFoundException(String.format("Пользователя с таким id = %s не найдено", id));
+            throw new NotFoundException(String.format("Пользователя с идентификатором = '%s' не найдено", id));
         }
         return users.get(id);
     }
@@ -52,7 +52,8 @@ public class InMemoryUserStorage implements UserStorage {
             throw new ValidationException("Поле id не должно быть пустым");
         }
         if (!users.containsKey(newUser.getId())) {
-            throw new NotFoundException(String.format("Пользователя с таким id = %s не найдено", newUser.getId()));
+            throw new NotFoundException(String.format("Пользователя с идентификатором = '%s' не найдено",
+                    newUser.getId()));
         }
         if (users.containsValue(newUser)) {
             throw new ValidationException("Пользователь с таким email уже есть");

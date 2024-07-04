@@ -14,10 +14,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.FilmService;
-import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 
 import java.util.Collection;
 
@@ -27,54 +25,42 @@ import java.util.Collection;
 @RequestMapping("/films")
 public class FilmController {
 
-    private final FilmStorage filmStorage;
     private final FilmService filmService;
 
     @GetMapping
     public Collection<Film> getFilms() {
-        return filmStorage.findFilms();
+        return filmService.findFilms();
     }
 
     @GetMapping("/{id}")
     public Film getFilmById(@PathVariable(required = false) Long id) {
-        return filmStorage.findFilmById(id);
+        return filmService.findFilmById(id);
     }
 
     @PostMapping
     public Film addFilm(@Valid @RequestBody Film newFilm) {
-        return filmStorage.addFilm(newFilm);
+        return filmService.addFilm(newFilm);
     }
 
     @PutMapping
     public Film updateFilm(@Valid @RequestBody Film newFilm) {
-        return filmStorage.updateFilm(newFilm);
+        return filmService.updateFilm(newFilm);
     }
 
     @PutMapping("/{id}/like/{userId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void addLike(@PathVariable Long id, @PathVariable Long userId) {
-        checkEmptyFields(id, userId);
         filmService.addLike(id, userId);
     }
 
     @DeleteMapping("/{id}/like/{userId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteLike(@PathVariable Long id, @PathVariable Long userId) {
-        checkEmptyFields(id, userId);
         filmService.removeLike(id, userId);
     }
 
     @GetMapping("/popular")
     public Collection<Film> getPopularFilm(@RequestParam(defaultValue = "10") Long count) {
-        if (count <= 0) {
-            throw new ValidationException("Передано некорректное значение для выборки популярных фильмов");
-        }
         return filmService.findPopularFilms(count);
-    }
-
-    private void checkEmptyFields(Long firstId, Long secondId) {
-        if (firstId <= 0 || secondId <= 0) {
-            throw new ValidationException("В строке запроса было передано отрицательное значение");
-        }
     }
 }
