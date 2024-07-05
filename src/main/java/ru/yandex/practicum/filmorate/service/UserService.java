@@ -39,11 +39,9 @@ public class UserService {
             throw new ValidationException("В строке запроса было передано отрицательное значение");
         }
         User user = userStorage.findUserById(id);
-        Collection<User> userFriends = userStorage.findUsers()
+        Collection<User> userFriends = user.getFriendIds()
                 .stream()
-                .filter(friends -> user.getFriendIds()
-                        .stream()
-                        .anyMatch(friend -> friend.equals(friends.getId())))
+                .map(userStorage::findUserById)
                 .toList();
         log.info("User friends {}", userFriends);
         return userFriends;
