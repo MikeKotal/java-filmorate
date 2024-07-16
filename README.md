@@ -49,7 +49,8 @@ erDiagram
     }
     
     friends {
-        int8 user_id PK
+        int8 friendship_id PK
+        int8 user_id
         int8 friend_id
         bool is_friend
     }
