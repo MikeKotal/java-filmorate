@@ -13,8 +13,8 @@ Template repository for Filmorate project.
 аномалий данных
 3. У таблицы ```movie``` связь с таблицей ```rating``` по параметру ```rating_id```
 при добавлении фильма, проставляется в таблицу идентификатор рейтинга
-4. У таблицы ```user``` есть связь с самой с собой по параметру ```friend_id```
-при добавлении нового друга его идентификатор добавляется пользователю и в случае 
+4. У таблицы ```user``` есть связь с таблицей ```friends```
+при добавлении нового друга его идентификатор добавляется в таблицу друзей и в случае 
 одобрения заявки на друзья - меняется признак ```is_friend```
 
 ```mermaid
@@ -46,13 +46,18 @@ erDiagram
         varchar login
         varchar name
         date birthday
-        int8 friend_id FK
+    }
+    
+    friends {
+        int8 user_id PK
+        int8 friend_id
         bool is_friend
     }
+    
     movie ||--o{ genre : contains
     movie }o--o{ user : contains
-    user ||--}o user : contains
     movie }o--|| rating : contains
+    user }o--o{ friends : contains
     
 ```
 
@@ -72,5 +77,5 @@ LIMIT 10;
 ```
 SELECT us.user_id, fr.user.id
 FROM user AS us
-JOIN user AS fr ON us.user_id=fr.friend_id
+LEFT JOIN friends AS fr ON us.user_id=fr.user_id
 ```
