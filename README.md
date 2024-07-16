@@ -11,7 +11,9 @@ Template repository for Filmorate project.
 2. У таблицы ```movie``` связь с таблицей ```genre``` по параметру ```genre_id```
 при добавлении фильма, проставлется в таблицу идентификатор жанра, отдельная таблица жанров нужна для разрешения 
 аномалий данных
-3. У таблицы ```user``` есть связь с самой с собой по параметру ```friend_id```
+3. У таблицы ```movie``` связь с таблицей ```rating``` по параметру ```rating_id```
+при добавлении фильма, проставляется в таблицу идентификатор рейтинга
+4. У таблицы ```user``` есть связь с самой с собой по параметру ```friend_id```
 при добавлении нового друга его идентификатор добавляется пользователю и в случае 
 одобрения заявки на друзья - меняется признак ```is_friend```
 
@@ -21,12 +23,17 @@ erDiagram
         int8 film_id PK
         varchar name
         varchar description
-        timestamp release_date
+        date release_date
         int8 duration
         int8 user_id_like FK
         int4 total_likes
         int4 genre_id FK
-        varchar rating
+        int4 rating_id
+    }
+    
+    rating {
+        int4 rating_id PK
+        varchar name
     }
     
     genre {
@@ -38,22 +45,25 @@ erDiagram
         varchar email
         varchar login
         varchar name
-        timestamp birthday
+        date birthday
         int8 friend_id FK
         bool is_friend
     }
-    movie }o--|| genre : contains
-    movie ||--|| user : is
+    movie ||--o{ genre : contains
+    movie }o--o{ user : contains
     user ||--}o user : contains
+    movie }o--|| rating : contains
+    
 ```
 
 # Примеры запроса:
-### 1. Выведем 10 популярных фильмов с отображением жанра и пользователей, кто поставил лайк
+### 1. Выведем 10 популярных фильмов с отображением жанра, рейтинга и пользователей, кто поставил лайк
 ```
 SELECT *
 FROM movie AS mv
 LEFT JOIN genre AS gn ON mv.genre_id=gn.genre_id
 LEFT JOIN user AS us ON mv.user_id_like=us.user_id
+LEFT JOIN rating AS rt ON mv.rating_id=rt.rating_id
 ORDER BY mv.total_likes DESC
 LIMIT 10;
 ```
