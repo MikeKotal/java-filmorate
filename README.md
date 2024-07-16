@@ -15,8 +15,6 @@ erDiagram
         date release_date
         int8 duration
         int4 total_likes
-        int4 genre_id
-        int4 rating_id FK
     }
     
     likes {
@@ -28,6 +26,12 @@ erDiagram
     ratings {
         int4 rating_id PK
         varchar name
+    }
+
+    film_ratings {
+        int8 film_ratings_id PK
+        int8 film_id FK
+        int4 rating_id FK
     }
 
     film_genres {
@@ -55,11 +59,12 @@ erDiagram
         bool is_friend
     }
     
-    genres||--||film_genres: is
+    genres||--||film_genres : is
     movies }o--o{ film_genres : contains
     users }o--o{ likes : contains
     movies }o--o{ likes : contains
-    movies }o--|| ratings : contains
+    movies ||--o{ film_ratings : contains
+    film_ratings ||--|| ratings : is
     users }o--o{ friends : contains
     
 ```
@@ -67,11 +72,13 @@ erDiagram
 # Примеры запроса:
 ### 1. Выведем 10 популярных фильмов с отображением жанра, рейтинга и пользователей, кто поставил лайк
 ```
-SELECT mv.name, mv.total_likes, g.name as genre_name, usr.login as user_login
+SELECT mv.name, mv.total_likes, g.name AS genre_name, 
+r.name AS rating_name, usr.login AS user_login
 FROM movies AS mv
 LEFT JOIN film_genres AS fg ON mv.film_id=fg.film_id
 LEFT JOIN genres AS g ON fg.genre_id=g.genre_id
-LEFT JOIN ratings AS r ON mv.rating_id=r.rating_id
+LEFT JOIN film_ratings AS fr ON mv.film_id=fr.film_id
+LEFT JOIN ratings AS r ON fr.rating_id=r.rating_id
 LEFT JOIN likes AS l ON mv.film_id=l.film_id
 LEFT JOIN users AS usr ON l.user_id=usr.user_id
 ORDER BY mv.total_likes DESC
