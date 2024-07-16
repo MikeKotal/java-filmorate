@@ -54,7 +54,7 @@ erDiagram
         bool is_friend
     }
     
-    movie ||--o{ genre : contains
+    movie }o--o{ genre : contains
     movie }o--o{ user : contains
     movie }o--|| rating : contains
     user }o--o{ friends : contains
