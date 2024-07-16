@@ -6,41 +6,41 @@ Template repository for Filmorate project.
 
 ```Для локального отображения схемы необходимо установить плагин Mermaid```
 
-1. У таблицы ```movie``` связь в таблицей ```user``` по параметру ```user_id_like``` 
-при добавлении лайка фильму пользователем сам пользователь линкуется с фильмом
-2. У таблицы ```movie``` связь с таблицей ```genre``` по параметру ```genre_id```
-при добавлении фильма, проставлется в таблицу идентификатор жанра, отдельная таблица жанров нужна для разрешения 
-аномалий данных
-3. У таблицы ```movie``` связь с таблицей ```rating``` по параметру ```rating_id```
-при добавлении фильма, проставляется в таблицу идентификатор рейтинга
-4. У таблицы ```user``` есть связь с таблицей ```friends```
-при добавлении нового друга его идентификатор добавляется в таблицу друзей и в случае 
-одобрения заявки на друзья - меняется признак ```is_friend```
-
 ```mermaid
 erDiagram
-    movie {
+    movies {
         int8 film_id PK
         varchar name
         varchar description
         date release_date
         int8 duration
-        int8 user_id_like FK
         int4 total_likes
-        int4 genre_id FK
-        int4 rating_id
+        int4 genre_id
+        int4 rating_id FK
     }
     
-    rating {
+    likes {
+        int8 like_id PK
+        user_id int8 FK
+        fiilm_id int8 FK
+    }
+    
+    ratings {
         int4 rating_id PK
         varchar name
     }
+
+    film_genres {
+        int8 film_genre_id PK
+        int8 film_id FK
+        genre_id int4 FK
+    }
     
-    genre {
+    genres {
         int4 genre_id PK
         varchar name
     }
-    user {
+    users {
         int8 user_id PK
         varchar email
         varchar login
@@ -50,33 +50,37 @@ erDiagram
     
     friends {
         int8 friendship_id PK
-        int8 user_id
+        int8 user_id FK
         int8 friend_id
         bool is_friend
     }
     
-    movie }o--o{ genre : contains
-    movie }o--o{ user : contains
-    movie }o--|| rating : contains
-    user }o--o{ friends : contains
+    genres||--||film_genres: is
+    movies }o--o{ film_genres : contains
+    users }o--o{ likes : contains
+    movies }o--o{ likes : contains
+    movies }o--|| ratings : contains
+    users }o--o{ friends : contains
     
 ```
 
 # Примеры запроса:
 ### 1. Выведем 10 популярных фильмов с отображением жанра, рейтинга и пользователей, кто поставил лайк
 ```
-SELECT *
-FROM movie AS mv
-LEFT JOIN genre AS gn ON mv.genre_id=gn.genre_id
-LEFT JOIN user AS us ON mv.user_id_like=us.user_id
-LEFT JOIN rating AS rt ON mv.rating_id=rt.rating_id
+SELECT mv.name, mv.total_likes, g.name as genre_name, usr.login as user_login
+FROM movies AS mv
+LEFT JOIN film_genres AS fg ON mv.film_id=fg.film_id
+LEFT JOIN genres AS g ON fg.genre_id=g.genre_id
+LEFT JOIN ratings AS r ON mv.rating_id=r.rating_id
+LEFT JOIN likes AS l ON mv.film_id=l.film_id
+LEFT JOIN users AS usr ON l.user_id=usr.user_id
 ORDER BY mv.total_likes DESC
 LIMIT 10;
 ```
 
 ### 2. Выведем список друзей пользователя
 ```
-SELECT us.user_id, fr.user.id
-FROM user AS us
+SELECT usr.user_id, fr.user.id
+FROM user AS usr
 LEFT JOIN friends AS fr ON us.user_id=fr.user_id
 ```
