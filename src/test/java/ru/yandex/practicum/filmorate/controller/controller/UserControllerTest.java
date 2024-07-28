@@ -1,4 +1,4 @@
-package ru.yandex.practicum.filmorate.controller;
+package ru.yandex.practicum.filmorate.controller.controller;
 
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
@@ -6,7 +6,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.dto.UserRequest;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -20,11 +20,11 @@ public class UserControllerTest {
 
     @Autowired
     private Validator validator;
-    private User user;
+    private UserRequest user;
 
     @BeforeEach
     public void setUp() {
-        user = new User();
+        user = new UserRequest();
     }
 
     @Test
@@ -35,7 +35,7 @@ public class UserControllerTest {
         user.setName("Test");
         user.setBirthday(LocalDate.now().minusDays(1));
 
-        Set<ConstraintViolation<User>> result = validator.validate(user);
+        Set<ConstraintViolation<UserRequest>> result = validator.validate(user);
         assertTrue(result.isEmpty(), "Ошибки по валидации быть не должно");
     }
 
@@ -47,10 +47,10 @@ public class UserControllerTest {
         user.setName("Test");
         user.setBirthday(LocalDate.now().minusDays(1));
 
-        List<ConstraintViolation<User>> result = List.copyOf(validator.validate(user));
+        List<ConstraintViolation<UserRequest>> result = List.copyOf(validator.validate(user));
         assertEquals(1, result.size(), "Отсутствует ошибка по валидации поля");
 
-        ConstraintViolation<User> validationResult = result.getFirst();
+        ConstraintViolation<UserRequest> validationResult = result.getFirst();
 
         assertEquals("email", validationResult.getPropertyPath().toString());
         assertEquals("Email не должен быть пустым", validationResult.getMessage());
@@ -64,10 +64,10 @@ public class UserControllerTest {
         user.setName("Test");
         user.setBirthday(LocalDate.now().minusDays(1));
 
-        List<ConstraintViolation<User>> result = List.copyOf(validator.validate(user));
+        List<ConstraintViolation<UserRequest>> result = List.copyOf(validator.validate(user));
         assertEquals(1, result.size(), "Отсутствует ошибка по валидации поля");
 
-        ConstraintViolation<User> validationResult = result.getFirst();
+        ConstraintViolation<UserRequest> validationResult = result.getFirst();
 
         assertEquals("email", validationResult.getPropertyPath().toString());
         assertEquals("Email имеет некорректный формат", validationResult.getMessage());
@@ -81,10 +81,10 @@ public class UserControllerTest {
         user.setName("Test");
         user.setBirthday(LocalDate.now().minusDays(1));
 
-        List<ConstraintViolation<User>> result = List.copyOf(validator.validate(user));
+        List<ConstraintViolation<UserRequest>> result = List.copyOf(validator.validate(user));
         assertEquals(1, result.size(), "Отсутствует ошибка по валидации поля");
 
-        ConstraintViolation<User> validationResult = result.getFirst();
+        ConstraintViolation<UserRequest> validationResult = result.getFirst();
 
         assertEquals("login", validationResult.getPropertyPath().toString());
         assertEquals("Логин не должен быть пустым", validationResult.getMessage());
@@ -98,10 +98,10 @@ public class UserControllerTest {
         user.setName("Test");
         user.setBirthday(LocalDate.now().plusDays(1));
 
-        List<ConstraintViolation<User>> result = List.copyOf(validator.validate(user));
+        List<ConstraintViolation<UserRequest>> result = List.copyOf(validator.validate(user));
         assertEquals(1, result.size(), "Отсутствует ошибка по валидации поля");
 
-        ConstraintViolation<User> validationResult = result.getFirst();
+        ConstraintViolation<UserRequest> validationResult = result.getFirst();
 
         assertEquals("birthday", validationResult.getPropertyPath().toString());
         assertEquals("Дата рождения не может быть в будущем", validationResult.getMessage());

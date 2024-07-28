@@ -1,4 +1,4 @@
-package ru.yandex.practicum.filmorate.controller;
+package ru.yandex.practicum.filmorate.controller.controller;
 
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
@@ -7,7 +7,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.dto.FilmRequest;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -21,11 +21,11 @@ class FilmControllerTest {
 
 	@Autowired
 	private Validator validator;
-	private Film film;
+	private FilmRequest film;
 
 	@BeforeEach
 	public void setUp() {
-		film = new Film();
+		film = new FilmRequest();
 	}
 
 	@Test
@@ -36,7 +36,7 @@ class FilmControllerTest {
 		film.setReleaseDate(LocalDate.parse("1895-12-28"));
 		film.setDuration(120L);
 
-		Set<ConstraintViolation<Film>> result = validator.validate(film);
+		Set<ConstraintViolation<FilmRequest>> result = validator.validate(film);
 		assertTrue(result.isEmpty(), "Ошибки по валидации быть не должно");
 	}
 
@@ -48,10 +48,10 @@ class FilmControllerTest {
 		film.setReleaseDate(LocalDate.now().minusDays(1));
 		film.setDuration(120L);
 
-		List<ConstraintViolation<Film>> result = List.copyOf(validator.validate(film));
+		List<ConstraintViolation<FilmRequest>> result = List.copyOf(validator.validate(film));
 		assertEquals(1, result.size(), "Отсутствует ошибка по валидации поля");
 
-		ConstraintViolation<Film> validationResult = result.getFirst();
+		ConstraintViolation<FilmRequest> validationResult = result.getFirst();
 
 		assertEquals("name", validationResult.getPropertyPath().toString());
 		assertEquals("Название фильма не должно быть пустым", validationResult.getMessage());
@@ -65,10 +65,10 @@ class FilmControllerTest {
 		film.setReleaseDate(LocalDate.now().minusDays(1));
 		film.setDuration(120L);
 
-		List<ConstraintViolation<Film>> result = List.copyOf(validator.validate(film));
+		List<ConstraintViolation<FilmRequest>> result = List.copyOf(validator.validate(film));
 		assertEquals(1, result.size(), "Отсутствует ошибка по валидации поля");
 
-		ConstraintViolation<Film> validationResult = result.getFirst();
+		ConstraintViolation<FilmRequest> validationResult = result.getFirst();
 
 		assertEquals("description", validationResult.getPropertyPath().toString());
 		assertEquals("Максимальное количество символов = 200", validationResult.getMessage());
@@ -82,10 +82,10 @@ class FilmControllerTest {
 		film.setReleaseDate(LocalDate.parse("1895-12-27"));
 		film.setDuration(120L);
 
-		List<ConstraintViolation<Film>> result = List.copyOf(validator.validate(film));
+		List<ConstraintViolation<FilmRequest>> result = List.copyOf(validator.validate(film));
 		assertEquals(1, result.size(), "Отсутствует ошибка по валидации поля");
 
-		ConstraintViolation<Film> validationResult = result.getFirst();
+		ConstraintViolation<FilmRequest> validationResult = result.getFirst();
 
 		assertEquals("releaseDate", validationResult.getPropertyPath().toString());
 		assertEquals("Дата не должна быть раньше 1895-12-28", validationResult.getMessage());
@@ -99,10 +99,10 @@ class FilmControllerTest {
 		film.setReleaseDate(LocalDate.now().minusDays(1));
 		film.setDuration(-1L);
 
-		List<ConstraintViolation<Film>> result = List.copyOf(validator.validate(film));
+		List<ConstraintViolation<FilmRequest>> result = List.copyOf(validator.validate(film));
 		assertEquals(1, result.size(), "Отсутствует ошибка по валидации поля");
 
-		ConstraintViolation<Film> validationResult = result.getFirst();
+		ConstraintViolation<FilmRequest> validationResult = result.getFirst();
 
 		assertEquals("duration", validationResult.getPropertyPath().toString());
 		assertEquals("Продолжительность не может быть отрицательной", validationResult.getMessage());
