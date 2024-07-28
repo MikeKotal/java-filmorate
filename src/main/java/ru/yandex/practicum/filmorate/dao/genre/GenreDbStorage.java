@@ -44,7 +44,7 @@ public class GenreDbStorage extends DbStorage<Genre> implements GenreStorage {
     @Override
     public void addFilmGenre(Long filmId, Long genreId) {
         String query = "INSERT INTO film_genres(film_id, genre_id) VALUES(?, ?)";
-        insert(query, filmId, genreId);
+        insertWithoutKey(query, filmId, genreId);
     }
 
     @Override

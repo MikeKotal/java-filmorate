@@ -5,14 +5,10 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Past;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
 
 import java.time.LocalDate;
 
 @Data
-@EqualsAndHashCode(of = {"email"})
-@ToString
 @NotNull(message = "Необходимо передать информацию о пользователе")
 public class UserRequest {
     private Long id;

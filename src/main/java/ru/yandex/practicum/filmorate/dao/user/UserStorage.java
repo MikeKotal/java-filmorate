@@ -12,8 +12,6 @@ public interface UserStorage {
 
     Optional<User> findUserById(Long id);
 
-    Boolean hasUserByEmail(String email);
-
     User saveUser(User newUser);
 
     User updateUser(User newUser);
@@ -21,4 +19,6 @@ public interface UserStorage {
     void addFriend(Long userId, Long friendId);
 
     void deleteFriend(Long userId, Long friendId);
+
+    List<User> findCommonFriends(Long id, Long otherId);
 }

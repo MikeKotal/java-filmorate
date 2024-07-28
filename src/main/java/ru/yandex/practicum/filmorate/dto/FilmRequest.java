@@ -5,8 +5,6 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
 import ru.yandex.practicum.filmorate.annotations.MinimumDate;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.Mpa;
@@ -15,8 +13,6 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Data
-@EqualsAndHashCode(of = {"name"})
-@ToString
 @NotNull(message = "Необходимо передать информацию о фильме")
 public class FilmRequest {
     private Long id;

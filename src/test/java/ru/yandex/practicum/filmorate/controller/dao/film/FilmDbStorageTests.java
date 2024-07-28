@@ -103,14 +103,6 @@ public class FilmDbStorageTests {
     }
 
     @Test
-    public void whenFindUserIdLikeByFimId1ThenReturnUserId1() {
-        List<Long> userIdLikes = filmDbStorage.findUsersIdLikes(1L);
-
-        Assertions.assertEquals(1, userIdLikes.size(), "Некоррктное количество id пользователей");
-        Assertions.assertEquals(1L, userIdLikes.getFirst(), "Некорректный идентификатор пользователя");
-    }
-
-    @Test
     public void whenUserAddLikeThenFilmLikeIncrease() {
         filmDbStorage.addLike(2L, 1L);
 

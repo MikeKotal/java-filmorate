@@ -9,23 +9,22 @@ CREATE TABLE IF NOT EXISTS movies (
 
 CREATE TABLE IF NOT EXISTS users (
     user_id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    email VARCHAR(255) NOT NULL,
-    login VARCHAR(40) NOT NULL,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    login VARCHAR(40) NOT NULL UNIQUE,
     name VARCHAR(40),
     birthday DATE
 );
 
 CREATE TABLE IF NOT EXISTS friends (
-    friendship_id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     user_id BIGINT REFERENCES users(user_id),
     friend_id BIGINT,
-    is_friend BOOLEAN
+    PRIMARY KEY (user_id, friend_id)
 );
 
 CREATE TABLE IF NOT EXISTS likes (
-    like_id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     user_id BIGINT REFERENCES users(user_id),
-    film_id BIGINT REFERENCES movies(film_id)
+    film_id BIGINT REFERENCES movies(film_id),
+    PRIMARY KEY (user_id, film_id)
 );
 
 CREATE TABLE IF NOT EXISTS ratings (
@@ -41,11 +40,11 @@ CREATE TABLE IF NOT EXISTS film_ratings(
 
 CREATE TABLE IF NOT EXISTS genres (
     genre_id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    name VARCHAR(40)
+    name VARCHAR(40) NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS film_genres (
-    film_genre_id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     film_id BIGINT REFERENCES movies(film_id),
-    genre_id INTEGER REFERENCES genres(genre_id)
+    genre_id INTEGER REFERENCES genres(genre_id),
+    PRIMARY KEY (film_id, genre_id)
 );

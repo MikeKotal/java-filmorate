@@ -18,8 +18,8 @@ VALUES (1, 6), (2, 1);
 INSERT INTO film_ratings (film_id, rating_id)
 VALUES (1, 4);
 
-INSERT INTO friends (user_id, friend_id, is_friend)
-VALUES (1, 2, true);
+INSERT INTO friends (user_id, friend_id)
+VALUES (1, 2);
 
 INSERT INTO likes (user_id, film_id)
 VALUES (1, 1);

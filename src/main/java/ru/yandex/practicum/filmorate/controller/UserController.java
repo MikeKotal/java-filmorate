@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.controller;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -31,7 +32,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public UserDto getUserById(@PathVariable(required = false) Long id) {
+    public UserDto getUserById(@PathVariable(required = false) @Positive Long id) {
         return userService.getUserById(id);
     }
 
@@ -48,23 +49,23 @@ public class UserController {
 
     @PutMapping("/{id}/friends/{friendId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void addFriend(@PathVariable Long id, @PathVariable Long friendId) {
+    public void addFriend(@PathVariable @Positive Long id, @PathVariable @Positive Long friendId) {
         userService.addFriend(id, friendId);
     }
 
     @DeleteMapping("/{id}/friends/{friendId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteFriend(@PathVariable Long id, @PathVariable Long friendId) {
+    public void deleteFriend(@PathVariable @Positive Long id, @PathVariable @Positive Long friendId) {
         userService.deleteFriend(id, friendId);
     }
 
     @GetMapping("/{id}/friends")
-    public List<UserDto> getUserFriends(@PathVariable Long id) {
+    public List<UserDto> getUserFriends(@PathVariable @Positive Long id) {
         return userService.getUserFriends(id);
     }
 
     @GetMapping("/{id}/friends/common/{otherId}")
-    public List<UserDto> getCommonFriends(@PathVariable Long id, @PathVariable Long otherId) {
+    public List<UserDto> getCommonFriends(@PathVariable @Positive Long id, @PathVariable @Positive Long otherId) {
         return userService.getCommonFriends(id, otherId);
     }
 }

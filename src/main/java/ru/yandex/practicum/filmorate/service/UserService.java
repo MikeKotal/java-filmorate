@@ -1,6 +1,6 @@
 package ru.yandex.practicum.filmorate.service;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.dto.UserDto;
@@ -16,7 +16,7 @@ import java.util.List;
 
 @Slf4j
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class UserService {
 
     private final UserStorage userStorage;
@@ -40,10 +40,6 @@ public class UserService {
     public UserDto createUser(UserRequest request) {
         log.info("Запрос на создание пользователя {}", request);
         User newUser = UserMapper.mapToUser(request);
-        if (userStorage.hasUserByEmail(newUser.getEmail())) {
-            log.error("Пользователь существует, создание невозможно, email {}", newUser.getEmail());
-            throw new ValidationException("Пользователь с таким email уже создан");
-        }
         newUser.setName((newUser.getName() == null || newUser.getName().isBlank())
                 ? newUser.getLogin()
                 : newUser.getName());
@@ -64,10 +60,6 @@ public class UserService {
             throw new ValidationException("Идентификатор пользователя не должен быть 0 или отрицательным");
         }
         User oldUser = getUser(newUser.getId());
-        if (userStorage.hasUserByEmail(newUser.getEmail()) && !newUser.equals(oldUser)) {
-            log.error("Такой пользователь уже есть в базе, email {}", newUser.getEmail());
-            throw new ValidationException("Пользователь с таким email уже создан");
-        }
         newUser.setId(oldUser.getId());
         newUser.setName((newUser.getName() == null || newUser.getName().isBlank())
                 ? newUser.getLogin()
@@ -78,10 +70,6 @@ public class UserService {
     }
 
     public List<UserDto> getUserFriends(Long id) {
-        if (id <= 0) {
-            log.error("Невалидный идентификатор пользователя {}", id);
-            throw new ValidationException("В строке запроса было передано отрицательное значение или равное нулю");
-        }
         User user = getUser(id);
         List<UserDto> userFriends = userStorage.findFriends(id)
                 .stream()
@@ -93,19 +81,14 @@ public class UserService {
 
     public List<UserDto> getCommonFriends(Long id, Long otherId) {
         log.info("Запрос на получение общих друзей id = {}, friendId = {}", id, otherId);
-        checkEmptyFields(id, otherId);
         User user = getUser(id);
         User friend = getUser(otherId);
         if (user.equals(friend)) {
             log.error("Пользователи идентичны друг другу 1 = {}, 2 = {}", user, friend);
             throw new ConditionsNotMetException("Нельзя посмотреть общих друзей самим с собой");
         }
-        List<User> userFriends = userStorage.findFriends(id);
-        log.info("Список друзей пользователя '{}' - {}", id, userFriends);
-        List<User> friendFriends = userStorage.findFriends(otherId);
-        log.info("Список друзей друга '{}' - {}", otherId, friendFriends);
-        List<UserDto> commonFriends = userFriends.stream()
-                .filter(friendFriends::contains)
+        List<UserDto> commonFriends = userStorage.findCommonFriends(id, otherId)
+                .stream()
                 .map(UserMapper::mapToUserDto)
                 .toList();
         log.info("Список общих друзей: {}", commonFriends);
@@ -114,7 +97,6 @@ public class UserService {
 
     public void addFriend(Long id, Long friendId) {
         log.info("Запрос на добавление в друзья, user = {}, friend = {}", id, friendId);
-        checkEmptyFields(id, friendId);
         User user = getUser(id);
         User friend = getUser(friendId);
         if (user.equals(friend)) {
@@ -127,7 +109,6 @@ public class UserService {
 
     public void deleteFriend(Long id, Long friendId) {
         log.info("Запрос на удаление из друзей, user = {}, friend = {}", id, friendId);
-        checkEmptyFields(id, friendId);
         User user = getUser(id);
         User friend = getUser(friendId);
         if (user.equals(friend)) {
@@ -136,13 +117,6 @@ public class UserService {
         }
         userStorage.deleteFriend(id, friendId);
         log.info("Пользователь: {} удалил друга: {}", user, friend);
-    }
-
-    private void checkEmptyFields(Long firstId, Long secondId) {
-        if (firstId <= 0 || secondId <= 0) {
-            log.error("Невалидный идентификатор {}, {}", firstId, secondId);
-            throw new ValidationException("В строке запроса было передано отрицательное значение или равное нулю");
-        }
     }
 
     private User getUser(Long id) {

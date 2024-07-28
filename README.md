@@ -18,9 +18,8 @@ erDiagram
     }
     
     likes {
-        int8 like_id PK
-        user_id int8 FK
-        film_id int8 FK
+        user_id int8 PK,FK
+        film_id int8 PK,FK
     }
     
     ratings {
@@ -53,9 +52,8 @@ erDiagram
     }
     
     friends {
-        int8 friendship_id PK
-        int8 user_id FK
-        int8 friend_id FK
+        int8 user_id PK,FK
+        int8 friend_id PK
         bool is_friend
     }
     
@@ -65,6 +63,6 @@ erDiagram
     movies ||--o{ likes : contains
     movies ||--|| film_ratings : contains
     film_ratings ||--|| ratings : is
-    users ||--o{ friends : contains
+    users }o--o{ friends : contains
     
 ```

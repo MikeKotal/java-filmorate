@@ -29,7 +29,7 @@ public class UserDbStorage extends DbStorage<User> implements UserStorage {
     @Override
     public List<User> findFriends(Long id) {
         String query = """
-                SELECT users.user_id, users.email, users.login, users.name, users.birthday, friends.is_friend
+                SELECT users.user_id, users.email, users.login, users.name, users.birthday
                 FROM users
                 LEFT JOIN friends ON users.user_id=friends.friend_id
                 WHERE users.user_id IN (SELECT friend_id FROM friends WHERE user_id = ?)
@@ -42,12 +42,6 @@ public class UserDbStorage extends DbStorage<User> implements UserStorage {
     public Optional<User> findUserById(Long id) {
         String query = "SELECT * FROM users WHERE user_id = ?";
         return findOne(query, id);
-    }
-
-    @Override
-    public Boolean hasUserByEmail(String email) {
-        String query = "SELECT * FROM users WHERE email = ?";
-        return findOne(query, email).isPresent();
     }
 
     @Override
@@ -80,13 +74,26 @@ public class UserDbStorage extends DbStorage<User> implements UserStorage {
 
     @Override
     public void addFriend(Long userId, Long friendId) {
-        String query = "INSERT INTO friends(user_id, friend_id, is_friend) VALUES (?, ?, ?)";
-        insert(query, userId, friendId, Boolean.TRUE);
+        String query = "INSERT INTO friends(user_id, friend_id) VALUES (?, ?)";
+        insertWithoutKey(query, userId, friendId);
     }
 
     @Override
     public void deleteFriend(Long userId, Long friendId) {
         String query = "DELETE FROM friends WHERE user_id = ? AND friend_id = ?";
         delete(query, userId, friendId);
+    }
+
+    @Override
+    public List<User> findCommonFriends(Long id, Long otherId) {
+        String query = """
+                SELECT *
+                FROM USERS AS u, FRIENDS AS friends, FRIENDS AS others
+                WHERE u.USER_ID = friends.FRIEND_ID
+                AND u.USER_ID = others.FRIEND_ID
+                AND friends.USER_ID = ?
+                AND others.USER_ID = ?
+                """;
+        return findMany(query, id, otherId);
     }
 }

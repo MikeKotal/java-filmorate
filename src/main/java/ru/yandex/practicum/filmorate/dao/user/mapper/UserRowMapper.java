@@ -20,12 +20,6 @@ public class UserRowMapper implements RowMapper<User> {
         user.setLogin(rs.getString("login"));
         user.setName(rs.getString("name"));
         user.setBirthday(rs.getDate("birthday").toLocalDate());
-        try {
-            user.setIsFriend(rs.getBoolean("is_friend"));
-        } catch (SQLException e) {
-            log.error("is_friend отсутствует в базе, error = {}", e.getMessage());
-            user.setIsFriend(null);
-        }
         log.info("Дессериализованный пользователь из базы {}", user);
         return user;
     }

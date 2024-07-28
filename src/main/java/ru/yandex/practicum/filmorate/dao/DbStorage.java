@@ -62,12 +62,15 @@ public class DbStorage<T> {
 
         Long id = keyHolder.getKeyAs(Long.class);
         log.info("Идентификатор созданной записи {}, сущность {}", params, query);
+        return id;
+    }
 
-        if (id != null) {
-            return id;
-        } else {
-            log.error("Ошибка при сохранении: {}", params);
-            throw new InternalServerException("Не удалось сохранить данные");
+    protected void insertWithoutKey(String query, Object... params) {
+        int rowsCreated = jdbcTemplate.update(query, params);
+        log.info("Строк добавлено {} для сущности {}", rowsCreated, params);
+        if (rowsCreated == 0) {
+            log.error("Ошибка при создании: {}", params);
+            throw new InternalServerException("Не удалось создать данные");
         }
     }
 }

@@ -41,7 +41,6 @@ public class UserDbStorageTests {
             Assertions.assertEquals("qwerty123", friends.getFirst().getLogin(), "Некорректный логин");
             Assertions.assertEquals("Nick", friends.getFirst().getName(), "Некорректное имя");
             Assertions.assertEquals("1995-07-02", friends.getFirst().getBirthday().toString());
-            Assertions.assertTrue(friends.getFirst().getIsFriend(), "Некорректный признак друга");
         });
     }
 
@@ -61,11 +60,6 @@ public class UserDbStorageTests {
     }
 
     @Test
-    public void whenFindUser1ByEmailThenReturnTrue() {
-        Assertions.assertTrue(userStorage.hasUserByEmail("test@test.ru"));
-    }
-
-    @Test
     public void whenAddNewUserThenUserSuccessCreated() {
         User user = new User();
         String email = "newEmail@email.com";
@@ -79,11 +73,11 @@ public class UserDbStorageTests {
 
         userStorage.saveUser(user);
 
-        User savedUser = userStorage.findUserById(3L).orElse(null);
+        User savedUser = userStorage.findUserById(4L).orElse(null);
 
         Assertions.assertNotNull(savedUser, "Новый пользователь не должен быть пустым");
         Assertions.assertAll(() -> {
-            Assertions.assertEquals(3L, savedUser.getId(), "Некорректный идентификатор пользователя");
+            Assertions.assertEquals(4L, savedUser.getId(), "Некорректный идентификатор пользователя");
             Assertions.assertEquals(email, savedUser.getEmail(), "Некорректный email");
             Assertions.assertEquals(login, savedUser.getLogin(), "Некорректный логин");
             Assertions.assertEquals(name, savedUser.getName(), "Некорректное имя");
@@ -136,8 +130,8 @@ public class UserDbStorageTests {
                     "Некорректный email");
             Assertions.assertEquals("test123", friends.getFirst().getLogin(), "Некорректный логин");
             Assertions.assertEquals("John", friends.getFirst().getName(), "Некорректное имя");
-            Assertions.assertEquals("1995-07-01", friends.getFirst().getBirthday().toString());
-            Assertions.assertTrue(friends.getFirst().getIsFriend(), "Некорректный признак друга");
+            Assertions.assertEquals("1995-07-01", friends.getFirst().getBirthday().toString(),
+                    "Некорректная дата рождения");
         });
     }
 
@@ -148,5 +142,36 @@ public class UserDbStorageTests {
         List<User> friends = userStorage.findFriends(1L);
 
         Assertions.assertTrue(friends.isEmpty(), "У пользователя не должно быть друзей");
+    }
+
+    @Test
+    public void whenFindCommonFriendWithUser2ThenReturn1Friend() {
+        User user = new User();
+        String email = "newEmail@email.com";
+        String login = "newLogin12345";
+        String name = "John Doe";
+        LocalDate birthday = LocalDate.parse("1995-07-03");
+        user.setEmail(email);
+        user.setLogin(login);
+        user.setName(name);
+        user.setBirthday(birthday);
+
+        userStorage.saveUser(user);
+        userStorage.addFriend(1L, 3L);
+        userStorage.addFriend(2L, 3L);
+
+        List<User> commonFriends = userStorage.findCommonFriends(1L, 2L);
+
+        Assertions.assertEquals(1, commonFriends.size(), "Некорректное количество общих друзей");
+        Assertions.assertAll(() -> {
+            Assertions.assertEquals(3L, commonFriends.getFirst().getId(),
+                    "Некорректный идентификатор пользователя");
+            Assertions.assertEquals(email, commonFriends.getFirst().getEmail(),
+                    "Некорректный email");
+            Assertions.assertEquals(login, commonFriends.getFirst().getLogin(), "Некорректный логин");
+            Assertions.assertEquals(name, commonFriends.getFirst().getName(), "Некорректное имя");
+            Assertions.assertEquals(birthday, commonFriends.getFirst().getBirthday(),
+                    "Некорректная дата рождения");
+        });
     }
 }

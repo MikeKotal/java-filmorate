@@ -66,16 +66,10 @@ public class FilmDbStorage extends DbStorage<Film> implements FilmStorage {
     }
 
     @Override
-    public List<Long> findUsersIdLikes(Long filmId) {
-        String query = "SELECT user_id FROM likes WHERE film_id = ?";
-        return jdbcTemplate.queryForList(query, Long.class, filmId);
-    }
-
-    @Override
     public void addLike(Long userId, Long filmId) {
-        String query = "INSERT INTO likes(user_id, film_id) VALUES(?, ?)";
+        String query = "MERGE INTO likes(user_id, film_id) VALUES(?, ?)";
         String updateQuery = "UPDATE movies SET total_likes = total_likes + 1 WHERE film_id = ?";
-        insert(query, userId, filmId);
+        insertWithoutKey(query, userId, filmId);
         update(updateQuery, filmId);
     }
 

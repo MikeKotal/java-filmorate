@@ -30,7 +30,6 @@ public class UserMapper {
         userDto.setLogin(user.getLogin());
         userDto.setName(user.getName());
         userDto.setBirthday(user.getBirthday());
-        userDto.setIsFriend(user.getIsFriend());
         log.info("UserDto из маппера: {}", userDto);
         return userDto;
     }
