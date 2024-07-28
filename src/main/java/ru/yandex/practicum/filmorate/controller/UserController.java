@@ -1,7 +1,6 @@
 package ru.yandex.practicum.filmorate.controller;
 
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -39,12 +38,12 @@ public class UserController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public UserDto createUser(@Valid @RequestBody @NotNull UserRequest request) {
+    public UserDto createUser(@Valid @RequestBody UserRequest request) {
         return userService.createUser(request);
     }
 
     @PutMapping()
-    public UserDto updateUser(@Valid @RequestBody @NotNull UserRequest request) {
+    public UserDto updateUser(@Valid @RequestBody UserRequest request) {
         return userService.updateUser(request);
     }
 
