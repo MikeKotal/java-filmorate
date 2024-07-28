@@ -42,7 +42,6 @@ public class FilmService {
     public FilmDto getFilmById(Long id) {
         FilmDto filmDto = FilmMapper.mapToFilmDto(getFilm(id));
         filmDto.setGenres(genreStorage.findGenresByFilmId(filmDto.getId()));
-        filmDto.setMpa(mpaStorage.findMpaByFilmId(filmDto.getId()));
         log.info("Фильм с id '{}' = '{}'", id, filmDto);
         return filmDto;
     }
@@ -59,7 +58,7 @@ public class FilmService {
             newFilm.setGenres(genres);
         }
         if (mpa != null) {
-            mpaStorage.addFilmMpa(filmId, mpa.getId());
+            mpaStorage.updateFilmMpa(filmId, mpa.getId());
             newFilm.setMpa(mpa);
         }
         log.info("Фильм сохранен {}", newFilm);

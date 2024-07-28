@@ -28,9 +28,9 @@ public class MpaDbStorage extends DbStorage<Mpa> implements MpaStorage {
     public Mpa findMpaByFilmId(Long id) {
         String query = """
                 SELECT r.rating_id, r.name
-                FROM film_ratings AS fr
-                LEFT JOIN ratings AS r ON fr.rating_id=r.rating_id
-                WHERE fr.film_id = ?
+                FROM movies AS m
+                LEFT JOIN ratings AS r ON m.rating_id=r.rating_id
+                WHERE m.film_id = ?
                 """;
         return findOne(query, id).orElse(null);
     }
@@ -42,14 +42,8 @@ public class MpaDbStorage extends DbStorage<Mpa> implements MpaStorage {
     }
 
     @Override
-    public void addFilmMpa(Long filmId, Long ratingId) {
-        String query = "INSERT INTO film_ratings(film_id, rating_id) VALUES(?, ?)";
-        insert(query, filmId, ratingId);
-    }
-
-    @Override
     public void updateFilmMpa(Long filmId, Long ratingId) {
-        String query = "UPDATE film_ratings SET rating_id = ? WHERE film_id = ?";
+        String query = "UPDATE movies SET rating_id = ? WHERE film_id = ?";
         update(query, ratingId, filmId);
     }
 }

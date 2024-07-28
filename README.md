@@ -15,6 +15,7 @@ erDiagram
         date release_date
         int8 duration
         int4 total_likes
+        int4 rating_id FK
     }
     
     likes {
@@ -25,12 +26,6 @@ erDiagram
     ratings {
         int4 rating_id PK
         varchar name
-    }
-
-    film_ratings {
-        int8 film_ratings_id PK
-        int8 film_id FK
-        int4 rating_id FK
     }
 
     film_genres {
@@ -53,7 +48,7 @@ erDiagram
     
     friends {
         int8 user_id PK,FK
-        int8 friend_id PK
+        int8 friend_id PK,FK
         bool is_friend
     }
     
@@ -61,8 +56,7 @@ erDiagram
     movies ||--o{ film_genres : contains
     users ||--|| likes : contains
     movies ||--o{ likes : contains
-    movies ||--|| film_ratings : contains
-    film_ratings ||--|| ratings : is
+    movies ||--|| ratings : is
     users }o--o{ friends : contains
     
 ```

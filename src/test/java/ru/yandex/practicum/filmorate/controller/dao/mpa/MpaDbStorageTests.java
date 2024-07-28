@@ -51,7 +51,7 @@ public class MpaDbStorageTests {
 
     @Test
     public void whenAddMpaRatingByFilmId2WithMpa2ThenReturnMpaPG() {
-        mpaDbStorage.addFilmMpa(2L, 2L);
+        mpaDbStorage.updateFilmMpa(2L, 2L);
 
         Mpa mpa = mpaDbStorage.findMpaById(2L).orElse(null);
         Assertions.assertNotNull(mpa, "Рейтинг не должен быть пустым");

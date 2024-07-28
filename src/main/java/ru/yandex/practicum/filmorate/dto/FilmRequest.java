@@ -2,7 +2,6 @@ package ru.yandex.practicum.filmorate.dto;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 import ru.yandex.practicum.filmorate.annotations.MinimumDate;
@@ -13,7 +12,6 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Data
-@NotNull(message = "Необходимо передать информацию о фильме")
 public class FilmRequest {
     private Long id;
     @NotBlank(message = "Название фильма не должно быть пустым")

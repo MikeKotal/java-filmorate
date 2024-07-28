@@ -12,7 +12,5 @@ public interface MpaStorage {
 
     Optional<Mpa> findMpaById(Long id);
 
-    void addFilmMpa(Long filmId, Long ratingId);
-
     void updateFilmMpa(Long filmId, Long ratingId);
 }

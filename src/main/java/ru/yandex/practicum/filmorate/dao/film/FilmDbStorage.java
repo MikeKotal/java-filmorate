@@ -20,8 +20,7 @@ public class FilmDbStorage extends DbStorage<Film> implements FilmStorage {
     public List<Film> findFilms() {
         String query = """
                 SELECT * FROM movies
-                LEFT JOIN film_ratings ON movies.film_id=film_ratings.film_id
-                LEFT JOIN ratings ON film_ratings.rating_id = ratings.rating_id
+                LEFT JOIN ratings ON movies.rating_id=ratings.rating_id
                 """;
         return findMany(query);
     }
@@ -30,8 +29,7 @@ public class FilmDbStorage extends DbStorage<Film> implements FilmStorage {
     public Optional<Film> findFilmById(Long id) {
         String query = """
                 SELECT * FROM movies
-                LEFT JOIN film_ratings ON movies.film_id=film_ratings.film_id
-                LEFT JOIN ratings ON film_ratings.rating_id = ratings.rating_id
+                LEFT JOIN ratings ON movies.rating_id=ratings.rating_id
                 WHERE movies.film_id = ?
                 """;
         return findOne(query, id);
@@ -85,8 +83,7 @@ public class FilmDbStorage extends DbStorage<Film> implements FilmStorage {
     public List<Film> findPopularFilms(Integer count) {
         String query = """
                 SELECT * FROM movies
-                LEFT JOIN film_ratings ON movies.film_id=film_ratings.film_id
-                LEFT JOIN ratings ON film_ratings.rating_id = ratings.rating_id
+                LEFT JOIN ratings ON movies.rating_id=ratings.rating_id
                 ORDER BY total_likes DESC
                 LIMIT ?
                 """;

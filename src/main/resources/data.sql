@@ -4,9 +4,9 @@ VALUES ('Комедия'), ('Драма'), ('Мультфильм'), ('Трил�
 INSERT INTO ratings (name)
 VALUES ('G'), ('PG'), ('PG-13'), ('R'), ('NC-17');
 
-INSERT INTO movies (name, description, release_date, duration, total_likes)
-VALUES ('Фильм', 'Крутой фильм', '2024-07-01', 150, 1),
-       ('Еще фильм', 'Круче предыдущего', '2024-07-02', 160, 0);
+INSERT INTO movies (name, description, release_date, duration, total_likes, rating_id)
+VALUES ('Фильм', 'Крутой фильм', '2024-07-01', 150, 1, 4),
+       ('Еще фильм', 'Круче предыдущего', '2024-07-02', 160, 0, null);
 
 INSERT INTO users (email, login, name, birthday)
 VALUES ('test@test.ru', 'test123', 'John', '1995-07-01'),
@@ -14,9 +14,6 @@ VALUES ('test@test.ru', 'test123', 'John', '1995-07-01'),
 
 INSERT INTO film_genres (film_id, genre_id)
 VALUES (1, 6), (2, 1);
-
-INSERT INTO film_ratings (film_id, rating_id)
-VALUES (1, 4);
 
 INSERT INTO friends (user_id, friend_id)
 VALUES (1, 2);
